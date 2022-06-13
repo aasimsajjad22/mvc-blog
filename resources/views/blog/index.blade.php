@@ -10,7 +10,7 @@
             <div class="row g-0">
                 <div class="col-md-8">
                     <div class="card-body">
-                        <h5 class="card-title">{{ $post['title'] }}</h5>
+                        <a href="/post-details/{{$post['id']}}" ><h5 class="card-title">{{ $post['title'] }}</h5></a>
                         <p class="card-text">{{ $post['body'] }}</p>
                         <p class="card-text"><small class="text-muted">{{ $post['created_at'] }}</small></p>
                     </div>

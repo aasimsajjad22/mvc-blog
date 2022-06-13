@@ -14,4 +14,10 @@ class BlogController extends BaseController
         $total = $posts->count();
         return view('blog/index', compact('posts', 'total'));
     }
+
+    public function detailAction($id)
+    {
+        $post = Post::where('id', $id)->first();
+        return view('blog/detail', compact('post'));
+    }
 }

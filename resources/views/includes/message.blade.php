@@ -1,6 +1,6 @@
 <div class="row expanded">
     <div class="column medium-11">
-        @if(count($errors) || \App\Classes\Session::has('error'))
+        @if(isset($errors) && count($errors) || \App\Classes\Session::has('error'))
             <div class="callout alert" data-closable>
                 <div class="alert alert-danger">
                 @if(\App\Classes\Session::has('error'))

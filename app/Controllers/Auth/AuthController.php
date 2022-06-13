@@ -70,7 +70,7 @@ class AuthController extends BaseController
                     return view('auth/login');
                 } else {
                     Session::add('SESSION_USER_ID', $user->id);
-                    Session::add('SESSION_USER_NAME', $user->email);
+                    Session::add('SESSION_EMAIL', $user->email);
                     Redirect::to('/');
                 }
             } else {
@@ -79,5 +79,14 @@ class AuthController extends BaseController
             }
         }
         return view('auth/login');
+    }
+
+    public function logoutAction()
+    {
+        if(isAuthenticated()){
+            Session::remove('SESSION_USER_ID');
+            Session::remove('SESSION_EMAIL');
+        }
+        Redirect::to('/');
     }
 }
