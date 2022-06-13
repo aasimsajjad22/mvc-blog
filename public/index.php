@@ -1,6 +1,4 @@
 <?php
 
-class index
-{
-
-}
+ini_set('display_errors', 1);
+require_once __DIR__.'/../bootstrap/init.php';
