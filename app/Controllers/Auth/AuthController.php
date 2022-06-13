@@ -2,14 +2,14 @@
 
 namespace App\Controllers\Auth;
 
-use App\Classes\CSRFToken;
 use App\Classes\Redirect;
 use App\Classes\Request;
 use App\Classes\Session;
 use App\Classes\ValidateRequest;
+use App\Controllers\BaseController;
 use App\Models\User;
 
-class AuthController
+class AuthController extends BaseController
 {
     public function registerAction()
     {
@@ -47,37 +47,35 @@ class AuthController
     {
         if(Request::has('post')) {
             $request = Request::get('post');
-            if (CSRFToken::verifyCSRFToken($request->token) OR true) {
-                $rules = [
-                    'email' => ['required' => true],
-                    'password' => ['required' => true],
-                ];
-                $validate = new ValidateRequest;
-                $validate->abide($_POST, $rules);
+            $rules = [
+                'email' => ['required' => true],
+                'password' => ['required' => true],
+            ];
+            $validate = new ValidateRequest;
+            $validate->abide($_POST, $rules);
 
-                if ($validate->hasError()) {
-                    $errors = $validate->getErrorMessages();
-                    return view('auth/login', ['errors' => $errors]);
-                }
+            if ($validate->hasError()) {
+                $errors = $validate->getErrorMessages();
+                return view('auth/login', ['errors' => $errors]);
+            }
 
-                /**
-                 * Check if user exist in db
-                 */
-                $user = User::where('email', $request->email)->first();
+            /**
+             * Check if user exist in db
+             */
+            $user = User::where('email', $request->email)->first();
 
-                if ($user) {
-                    if (!password_verify($request->password, $user->password)) {
-                        Session::add('error', 'Incorrect password');
-                        return view('auth/login');
-                    } else {
-                        Session::add('SESSION_USER_ID', $user->id);
-                        Session::add('SESSION_USER_NAME', $user->email);
-                        Redirect::to('/');
-                    }
-                } else {
-                    Session::add('error', 'User not found, please try again');
+            if ($user) {
+                if (!password_verify($request->password, $user->password)) {
+                    Session::add('error', 'Incorrect password');
                     return view('auth/login');
+                } else {
+                    Session::add('SESSION_USER_ID', $user->id);
+                    Session::add('SESSION_USER_NAME', $user->email);
+                    Redirect::to('/');
                 }
+            } else {
+                Session::add('error', 'User not found, please try again');
+                return view('auth/login');
             }
         }
         return view('auth/login');

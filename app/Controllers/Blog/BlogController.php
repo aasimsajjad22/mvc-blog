@@ -2,10 +2,16 @@
 
 namespace App\Controllers\Blog;
 
-class BlogController
+use App\Controllers\BaseController;
+use App\Models\Post;
+
+class BlogController extends BaseController
 {
+
     public function listAction()
     {
-        return view('blog/index', ['name' => 'Aasim']);
+        $posts = Post::all();
+        $total = $posts->count();
+        return view('blog/index', compact('posts', 'total'));
     }
 }
