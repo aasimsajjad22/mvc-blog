@@ -1,49 +1,66 @@
 <?php
-
 namespace App\Classes;
 
 class Request
 {
-    public function getPath()
+    /**
+     * return all request that we are interested in
+     * @param bool $is_array
+     * @return mixed
+     */
+    public static function all($is_array = false)
     {
-        $path = $_SERVER['REQUEST_URI'] ?? '/';
-        $position = strpos($path, '?');
+        $result = [];
+        if(count($_GET) > 0) $result['get'] = $_GET;
+        if(count($_POST) > 0) $result['post'] = $_POST;
+        $result['file'] = $_FILES;
 
-        if($position == false) {
-            return $path;
-        }
-
-        return substr($path, 0, $position);
+        return json_decode(json_encode($result), $is_array);
     }
 
-    public function method()
+    /**
+     * get specific request type
+     * @param $key
+     * @return mixed
+     */
+    public static function get($key)
     {
-        return strtolower($_SERVER['REQUEST_METHOD']);
+        $object = new static;
+        $data = $object->all();
+
+        return $data->$key;
     }
 
-    public function isGet()
+    /**
+     * check request availability
+     * @param $key
+     * @return bool
+     */
+    public static function has($key)
     {
-        return $this->method() === 'get';
+        return (array_key_exists($key, self::all(true))) ? true : false;
     }
 
-    public function isPost()
+    /**
+     * get request data
+     * @param $key
+     * @param $value
+     * @return string
+     */
+    public static function old($key, $value)
     {
-        return $this->method() === 'post';
+        $object = new static;
+        $data = $object->all();
+        return isset($data->$key->$value) ? $data->$key->$value : '';
     }
 
-    public function getBody()
+    /**
+     * refresh request
+     */
+    public static function refresh()
     {
-        $body = [];
-        if($this->method() === 'post') {
-            foreach ($_POST as $key => $value) {
-                $body[$key] = filter_input(INPUT_POST, $key, FILTER_SANITIZE_SPECIAL_CHARS);
-            }
-        }
-        if($this->method() == 'get') {
-            foreach ($_GET as $key => $value) {
-                $body[$key] = filter_input(INPUT_GET, $key, FILTER_SANITIZE_SPECIAL_CHARS);
-            }
-        }
-        return $body;
+        $_POST = [];
+        $_GET = [];
+        $_FILES = [];
     }
 }
