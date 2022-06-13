@@ -3,6 +3,7 @@
 namespace App\Routing;
 
 use AltoRouter;
+use App\Classes\Request;
 
 class RouteDispatcher
 {
@@ -23,7 +24,8 @@ class RouteDispatcher
             if(is_callable([ new $this->controller, $this->method])) {
                 call_user_func_array(
                     [new $this->controller, $this->method],
-                    [$this->match['params']]
+                    [new Request(), $this->match['params']],
+
                 );
             }else {
                 echo "The method {$this->method} is not defined in {$this->controller}";

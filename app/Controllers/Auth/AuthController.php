@@ -2,11 +2,28 @@
 
 namespace App\Controllers\Auth;
 
+use App\Classes\Request;
+use App\Models\Register;
+
 class AuthController
 {
-    public function registerAction()
+    public function registerAction(Request $request)
     {
-        return view('auth/register');
+        $registerModel = new Register();
+
+        if($request->isPost()) {
+            $registerModel->loadData($request->getBody());
+
+            if ($registerModel->validate() && $registerModel->register()) {
+                echo 'SUCCESS';
+            }
+
+            return view('auth/register', [
+                'register' => $registerModel
+            ]);
+        }
+
+        return view('auth/register', ['register' => $registerModel]);
     }
 
     public function loginAction()
