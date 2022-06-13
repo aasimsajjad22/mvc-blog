@@ -2,10 +2,11 @@
 
 namespace App\Controllers;
 
-class IndexController
+class Controller
 {
     public function listAction()
     {
         echo 'List Action!';
     }
+
 }
